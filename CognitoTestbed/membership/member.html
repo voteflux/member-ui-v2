@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title>Flux Members</title>
+        <link rel="stylesheet" href="../common/flux.css" type="text/css" />
+        <script src="member.js"></script>
+        <script src="../common/flux.js"></script>
+        <script src="../common/amazon-cognito-identity.js"></script>        
+        <script src="../common/aws-sdk.min.js"></script>        
+    </head>
+    
+    <body>
+    
+        <div class="title">
+            <img src="../common/logo.png" style="vertical-align: middle; margin: 0px; padding: 0px; width: 50px; height=50px;">
+            <div class="inline" style="width: calc(100% - 100px); height: 50px; line-height: 50px; vertical-align: middle; font-size: 24px;">Flux Members Application</div>
+            <img src="../common/blank.png" style="vertical-align: middle; margin: 0px; padding: 0px; width: 50px; height=50px;"> 
+        </div>
+
+        <div id="header" class="row" style="text-align: center; font-size: 16px; line-height: 1.5;">
+            <a href="." onclick="showSignin(); return false;">Sign In</a>, or
+            <a href="." onclick="showSignup(); return false;">Sign Up</a> &
+            <a href="." onclick="showConfirmation(); return false;">Verify</a>
+            to begin voting!
+            <br/>
+            Forgot Password?
+            <a href="." onclick="showForgotPassword(); return false;">Request Reset</a> then
+            <a href="." onclick="showResetPassword(); return false;">Reset Password</a>
+        </div>
+        
+        <div id="signupSection" class="section hidden">
+            
+            <div class="heading">Sign Up</div>
+        
+            <div class="row">
+                <div class="label inline">Username*</div>
+                <input id="signup.username" type="text" class="textbox signup">
+            </div>
+        
+            <div class="row">
+                <div class="label inline">Password*</div>
+                <input id="signup.password" type="password" class="textbox signup">
+            </div>
+        
+            <div class="row">
+                <div class="label inline">First name*</div>
+                <input id="signup.given_name" type="text" class="textbox signup">
+            </div>
+        
+            <div class="row">
+                <div class="label inline">Last name</div>
+                <input id="signup.family_name" type="text" class="textbox signup">
+            </div>
+        
+            <div class="row">
+                <div class="label inline">Email*</div>
+                <input id="signup.email" type="text" class="textbox signup">
+            </div>
+        
+            <div class="row">
+                <div class="label inline">Phone*</div>
+                <input id="signup.phone_number" type="text" class="textbox signup">
+            </div>
+        
+            <div class="buttonbar">
+                <button class="button" onclick="signupGo();">Sign Up</button>
+                <div class="inline" style="width: 25px;"></div>
+                <button class="button" onclick="signupClear();">Clear</button>
+            </div>
+            
+            <div id="signup.message" class="message hidden signup"></div>
+
+        </div>        
+
+        <div id="confirmationSection" class="section hidden">
+            
+            <div class="heading">Verification</div>
+        
+            <div class="row">
+                <div class="label inline">Username*</div>
+                <input id="confirm.username" type="text" class="textbox confirm">
+            </div>
+        
+            <div class="row">
+                <div class="label inline">Verification Code*</div>
+                <input id="confirm.code" type="text" class="textbox confirm">
+            </div>
+        
+            <div class="buttonbar">
+                <button class="button" onclick="confirmGo();">Confirm</button>
+            </div>
+            
+            <div id="confirm.message" class="message hidden confirm"></div>
+
+        </div>        
+
+        <div id="signinSection" class="section">
+            
+            <div class="heading">Sign in</div>
+        
+            <div class="row">
+                <div class="label inline">Username*</div>
+                <input id="signin.username" type="text" class="textbox signin">
+            </div>
+        
+            <div class="row">
+                <div class="label inline">Password*</div>
+                <input id="signin.password" type="password" class="textbox signin">
+            </div>
+        
+            <div class="buttonbar">
+                <button class="button" onclick="signinGo();">Sign In</button>
+                <div class="inline" style="width: 25px;"></div>
+                <button class="button" onclick="signinClear();">Clear</button>
+            </div>
+            
+            <div id="signin.message" class="message hidden signin"></div>
+
+        </div>
+        
+        <div id="forgotPasswordSection" class="section hidden">
+            
+            <div class="heading">Forgot Password</div>
+        
+            <div class="row">
+                <div class="label inline">Username*</div>
+                <input id="forgotPassword.username" type="text" class="textbox forgotPassword">
+            </div>
+        
+            <div class="buttonbar">
+                <button class="button" onclick="forgotPasswordGo();">Request Reset</button>
+            </div>
+            
+            <div id="forgotPassword.message" class="message hidden forgotPassword"></div>
+
+        </div>
+        
+        <div id="resetPasswordSection" class="section hidden">
+            
+            <div class="heading">Reset Password</div>
+        
+            <div class="row">
+                <div class="label inline">Username*</div>
+                <input id="resetPassword.username" type="text" class="textbox resetPassword">
+            </div>
+        
+            <div class="row">
+                <div class="label inline">Verification Code*</div>
+                <input id="resetPassword.code" type="text" class="textbox resetPassword">
+            </div>
+        
+            <div class="row">
+                <div class="label inline">New Password*</div>
+                <input id="resetPassword.password" type="password" class="textbox resetPassword">
+            </div>
+        
+            <div class="buttonbar">
+                <button class="button" onclick="resetPasswordGo();">Reset Password</button>
+            </div>
+            
+            <div id="resetPassword.message" class="message hidden resetPassword"></div>
+
+        </div>        
+
+        <div id="memberContent" class="hidden">
+
+            <div class="row" style="margin: 0px 10px; padding: 0px;">
+                <div id="signoutTab" class="unselectedTab tab inline" style="float: right; margin-right: 0px; font-weight: normal;">
+                    <a href="." onclick="signoutGo(); return false;">Sign Out</a>
+                </div>
+                <div id="welcomeTab" class="selectedTab tab inline" onclick="selectTab('memberContent', this.id);">Welcome</div>
+                <div id="detailsTab" class="unselectedTab tab inline" onclick="selectTab('memberContent', this.id);">Member Details</div>
+                <div id="votesTab" class="unselectedTab tab inline" onclick="selectTab('memberContent', this.id);">Votes</div>
+                <div id="adminTab" class="unselectedTab tab inline" onclick="selectTab('memberContent', this.id);">Admin</div>
+            </div>
+
+            <div id="welcomeTabContent" class="tabContent">
+                
+                <div class="tabSection">
+                    
+                    <div class="row" style="height: 250px; line-height:200px; font-size: 24px; text-align: center; vertical-align: middle;">
+                        Welcome to Flux, <span id="welcome.username"></span>!
+                    </div>
+                
+                </div>
+                
+            </div>
+            
+            <div id="detailsTabContent" class="tabContent hidden">
+                
+                <div class="tabSection">
+                    
+                    <div class="row">
+                        <div class="label inline">First name*</div>
+                        <input id="details.given_name" type="text" class="textbox details">
+                    </div>
+                
+                    <div class="row">
+                        <div class="label inline">Last name</div>
+                        <input id="details.family_name" type="text" class="textbox details">
+                    </div>
+                
+                    <div class="row">
+                        <div class="label inline">Email*</div>
+                        <input id="details.email" type="text" class="textbox details">
+                    </div>
+                
+                    <div class="row">
+                        <div class="label inline">Phone*</div>
+                        <input id="details.phone_number" type="text" class="textbox details">
+                    </div>
+                
+                    <div class="row">
+                        <div class="label inline">Address 1</div>
+                        <input id="details.custom:address_1" type="text" class="textbox details">
+                    </div>
+             
+                    <div class="row">
+                        <div class="label inline">Address 2</div>
+                        <input id="details.custom:address_2" type="text" class="textbox details">
+                    </div>
+                
+                    <div class="row">
+                        <div class="label inline">Suburb</div>
+                        <input id="details.custom:address_suburb" type="text" class="textbox details">
+                    </div>
+                
+                    <div class="row">
+                        <div class="label inline">State</div>
+                        <input id="details.custom:address_state" type="text" class="textbox details">
+                    </div>
+                
+                    <div class="row">
+                        <div class="label inline">Postcode</div>
+                        <input id="details.custom:address_postcode" type="text" class="textbox details">
+                    </div>
+                
+                    <div class="row">
+                        <div class="label inline">Groups</div>
+                        <div id="details.groups" class="label inline" style="width: 200px; margin: 0px; border: 1px solid gray; padding: 3px;">[Default]</div>
+                    </div>
+                
+                    <div class="buttonbar">
+                        <button class="button" onclick="detailsLoad();">Load Details</button>
+                        <div class="inline" style="width: 25px;"></div>
+                        <button class="button" onclick="detailsSave();">Save Details</button>
+                        <div class="inline" style="width: 25px;"></div>
+                        <button class="button" onclick="detailsClear();">Clear</button>
+                    </div>
+                    
+                    <div id="details.message" class="message hidden details"></div>
+    
+                </div>
+                    
+            </div>        
+
+            <div id="votesTabContent" class="tabContent hidden">
+                
+                <div class="tabSection">
+                    
+                    <div class="row" style="margin: 0px;">
+                        <select id="votes.choice" class="select votes" style="width: 200px; font-size: 20px;">
+                            <option value="">[Cats or Dogs?]</option>
+                            <option value="Dogs">Dogs</option>
+                            <option value="Cats">Cats</option>
+                        </select>
+                        <button class="button" style="margin: 0px 20px; width: 150px;" onclick="voteSave();">Cast your Vote</button>
+                    </div>
+                    <p/>
+                    <div class="row" style="margin: 0px;">
+                        <div class="label inline" style="width: 200px; font-size: 24px;">View your vote</div>
+                        <button class="button" style="margin: 0px 20px; width: 150px;" onclick="voteLoad();">View my Vote</button>
+                        <div id="votes.vote" class="label inline votes" style="width: auto; font-size: 24px;"></div>
+                    </div>
+                    <p/>
+                    <div id="votes.result.div" class="row admin_function" style="margin: 0px;">
+                        <div class="label inline" style="width: 200px; font-size: 24px;">View poll results</div>
+                        <button class="button" style="margin: 0px 20px; width: 150px;" onclick="voteResults();">View Results</button>
+                        <div id="votes.result" class="label votes" style="width: 100%; margin-top: 20px; font-size: 24px; text-align: center;">&nbsp;</div>
+                    </div>
+
+                </div>
+                
+            </div>
+            
+            <div id="adminTabContent" class="tabContent hidden">
+                
+                <div class="tabSection">
+                    
+                    <div class="heading">Change Password</div>
+                
+                    <div class="row">
+                        <div class="label inline">Old Password*</div>
+                        <input id="changePassword.oldPassword" type="password" class="textbox changePassword">
+                    </div>
+                
+                    <div class="row">
+                        <div class="label inline">New Password*</div>
+                        <input id="changePassword.newPassword" type="password" class="textbox changePassword">
+                    </div>
+                
+                    <div class="buttonbar">
+                        <button class="button" onclick="changePasswordGo();">Change Password</button>
+                    </div>
+                    
+                    <div id="changePassword.message" class="message hidden changePassword"></div>
+        
+                </div>
+                <p/>
+                <div class="tabSection">
+                    
+                    <div class="heading">Close Account</div>
+                
+                    <div class="label" style="width: 100%; text-align: center; font-size: 20px;">To close your account, press the button below.<br/>THIS CANNOT BE UNDONE!</div>
+                
+                    <div class="buttonbar">
+                        <button class="button" onclick="deleteUserGo();">Close Account</button>
+                    </div>
+                    
+                    <div id="deleteUser.message" class="message hidden deleteUser"></div>
+        
+                </div>        
+                
+            </div>
+            
+        </div>
+
+        <div id="overlay" class="overlay">
+            <div id="progress" class="dialog">
+                <div id="progress.text" class="label" style="width: 100%; font-size: 20px; text-align: center;">Working...</div>
+            </div>
+        </div>
+
+    </body>
+    
+</html>
